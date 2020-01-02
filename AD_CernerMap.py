@@ -22,7 +22,7 @@ conn.simple_bind_s(user,pssw)
 ## Search ##
 response = conn.search_s(
     'dc=mhs,dc=org', ldap.SCOPE_SUBTREE,
-    'userPrincipalName=gordont@monhealthsys.org')
+    'userPrincipalName=abbasz@monhealthsys.org')
 pp.pprint(response)
 
 
