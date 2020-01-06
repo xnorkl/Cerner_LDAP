@@ -1,4 +1,5 @@
-## XLSX PARSER ##
+### XLSX PARSER ###
+
 from bisect import insort
 from openpyxl import load_workbook
 from os import path
@@ -53,21 +54,4 @@ def split_list(names: List[str]) -> List[List[str]]:
   split_names = [list(filter(None,name)) for name in split_names]
   return split_names
 
-def create_username(name: List[str]) -> str:
-  rubric    = ['Last','First','Mid']
-  named = {k:v for k,v in zip(rubric,name)}
-  if len(named['First']) == 1:
-    pocket = named['First']
-    named['First'] = named['Mid']
-    named['Mid'] = pocket
-  username  = named['Last']+named['First'][0]
-  return username
-
-def list_usernames(path: str, col: str) -> List[str]:
-  full_names = list_column(path,col)
-  names = [n for n in split_list(full_names) if n]
-  users = []
-  for name in names:
-    users.append(create_username(name))
-  return users
 
