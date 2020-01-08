@@ -2,7 +2,7 @@
 
 from getpass import getpass, getuser
 import ldap
-from PARSER import list_column, split_list
+from PARSR import split_list
 from socket import gethostname
 from typing import List
 
@@ -19,7 +19,7 @@ conn.protocol_version = 3
 conn.set_option(ldap.OPT_REFERRALS, 0)
 conn.simple_bind_s(uprn,pssw)
 
-## Create Millenium Usernames ## 
+## Create Millenium Usernames ##
 
 def check_username(uname: str) -> bool:
   sam = 'sAMAccountName=' + uname
@@ -43,11 +43,11 @@ def create_username(name: List[str], lost: List[str]) -> str:
      lost.append(username)
   return username
 
-def list_usernames(path: str, col: str) -> List[str]:
-  full_names = list_column(path,col)
-  names = [name for name in split_list(full_names) if name]
+def list_usernames(full_names: List[str], col: str) -> List[str]:
+  split_names = [name for name in split_list(full_names) if name]
   lost_users = []
-  mill_users = [create_username(name, lost_users) for name in names]
+  mill_users = [create_username(name, lost_users) for name in split_names]
+  
   return mill_users, lost_users
 
 

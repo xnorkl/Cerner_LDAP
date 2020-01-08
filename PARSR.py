@@ -2,45 +2,30 @@
 
 from bisect import insort
 from openpyxl import load_workbook
-from os import path
 from typing import List, Dict, Iterable
 import re
-import pprint
-
-# Set PPrint
-pp = pprint.PrettyPrinter(indent=1)
-
-# Set workbook (path can be improved)
-path = 'Providers.xlsx'
 
 def list_column(spreadsheet: str, column: str) -> List[str]:
   ## Takes a path to an xlsx and a column and returns a list
-  ## TODO ##
-  # Path should be more than a str, meaning check OS and then use appropriate
-  # function to check if path exists
   wb = load_workbook(spreadsheet)
   worksheet = wb.active
-  # Full Name column of Workbook
   return worksheet[column]
 
 def normalize_list(names: List[str]) -> List[str]:
   ## Takes a List of full names and normalizes list ##
   # Tokens to remove absolutely
-  de_s  = "(),_."
-  clean = str.maketrans(dict.fromkeys(de_s))
+  clean = str.maketrans(dict.fromkeys("(),_."))
 
-  # Remove tokens that can't be removed absolutely
-  normalized: List[str] = sorted([re.sub(
+  # Remove any Names containing Test
+  # Remove any (<WORD>)
+  # [A-Z]{2,}    : Remove any caps words of two or more chars (i.e., MD,PHD,etc)
+  # \b[A-Z]?-\S+ : Remove '-' and any following word
+  # (\s)(?=\s)   : Remove double whitespaces
+  normalized: List[str] = [re.sub(
     r'(Test\s.*)|(Cerner)|(Physician)|(Advisor)|(\sHw)|(De La)|(O\')|(^St\s)|[A-Z]{2,}|\b[A-Z]?-\S+|(\s)(?=\s)',
-    # Remove any Names containing Test
-    # Remove any (<WORD>)
-    # [A-Z]{2,}     : Remove any al caps words of two or more chars (i.e., MD,PHD,etc)
-    # \b[A-Z]?-\S+  : Remove '-' and any following word
-    # (\s)(?=\s)    : Remove double whitespaces
     '',
-    str(n.value).translate(clean)).strip()
-    for n in names
-    ])
+    str(n.value).translate(clean)
+    ).strip() for n in names]
   return normalized
 
 def split_list(names: List[str]) -> List[List[str]]:
@@ -51,7 +36,17 @@ def split_list(names: List[str]) -> List[List[str]]:
       sub.append('NULL') or sub if len(sub) == 2
       else sub
       for sub in list(re.split(r'\s', name) for name in normal))
+
+  # Filter out blank elements
   split_names = [list(filter(None,name)) for name in split_names]
   return split_names
+
+def stringify(m_list: List[str]) -> List[str]:
+  str_list: List[str] = [re.sub(
+    r'(ANESTHEV)|(CACTR\S+)|(FBCMD)|(OBNP)|(OBPA)|(None)',
+    '',
+    str(e.value)).strip() for e in m_list[1:]]
+
+  return list(filter(None,str_list))
 
 
