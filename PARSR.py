@@ -22,7 +22,7 @@ def normalize_list(names: List[str]) -> List[str]:
   # \b[A-Z]?-\S+ : Remove '-' and any following word
   # (\s)(?=\s)   : Remove double whitespaces
   normalized: List[str] = [re.sub(
-    r'(Test\s.*)|(Cerner)|(Physician)|(Advisor)|(\sHw)|(De La)|(O\')|(^St\s)|[A-Z]{2,}|\b[A-Z]?-\S+|(\s)(?=\s)',
+    r'(Test\s.*)|(\sHw)|(O\')|(^St\s)|[A-Z]{2,}|\b[A-Z]?-\S+|(\s)(?=\s)',
     '',
     str(n.value).translate(clean)
     ).strip() for n in names]
@@ -43,7 +43,7 @@ def split_list(names: List[str]) -> List[List[str]]:
 
 def stringify(m_list: List[str]) -> List[str]:
   str_list: List[str] = [re.sub(
-    r'(ANESTHEV)|(CACTR\S+)|(FBCMD)|(OBNP)|(OBPA)|(None)',
+    r'(CACTR\S+)|(FBCMD)|(OBNP)|(OBPA)|(None)',
     '',
     str(e.value)).strip() for e in m_list[1:]]
 

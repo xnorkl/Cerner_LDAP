@@ -10,11 +10,11 @@ from typing import List
 
 ## Prompt ##
 user = input('Username: ')
-uprn = user + '@monhealthsys.org'
+uprn = user + '@mydomain.org'
 pssw = getpass()
 
 ## LDAP Configs ##
-conn = ldap.initialize('ldap://172.26.5.141')
+conn = ldap.initialize('ldap://0.0.0.0')
 conn.protocol_version = 3
 conn.set_option(ldap.OPT_REFERRALS, 0)
 conn.simple_bind_s(uprn,pssw)
@@ -47,7 +47,7 @@ def list_usernames(full_names: List[str], col: str) -> List[str]:
   split_names = [name for name in split_list(full_names) if name]
   lost_users = []
   mill_users = [create_username(name, lost_users) for name in split_names]
-  
+
   return mill_users, lost_users
 
 
